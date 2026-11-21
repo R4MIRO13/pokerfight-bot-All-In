@@ -99,6 +99,7 @@ estilo y cuántas veces quedó eliminado. Los detalles quedan en `pruebas/result
 python pruebas\torneo_completo.py                     # un torneo completo
 python pruebas\torneo_completo.py --minutos-final 15  # final más corta
 python pruebas\torneo_completo.py --torneos 3         # varios torneos y tabla de títulos
+python pruebas\torneo_completo.py --sin-final         # solo las 10 rondas, sin la final
 ```
 
 Juegan los bots de `pruebas\participantes.txt` (30 por defecto, como el torneo oficial).

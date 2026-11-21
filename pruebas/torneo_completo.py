@@ -21,6 +21,7 @@ sacar o meter bots).
 Uso (desde la carpeta pokerfight-bot):
     python pruebas\\torneo_completo.py
     python pruebas\\torneo_completo.py --minutos-final 15     # final más corta
+    python pruebas\\torneo_completo.py --sin-final            # solo las 10 rondas
     python pruebas\\torneo_completo.py --torneos 3            # varios torneos y tabla de títulos
     python pruebas\\torneo_completo.py --paralelo 6           # más mesas a la vez (más CPU)
 """
@@ -236,6 +237,15 @@ def un_torneo(t, args, carpeta_base):
         to = f"  [{timeouts[b]} timeouts]" if timeouts[b] else ""
         print(f"  {pos:2d}. {etiqueta(b):<20} {fichas[b]:7d}  {estado}{to}")
 
+    if args.sin_final:
+        print(f"\nClasificados a la final: {', '.join(etiqueta(b) for b in finalistas)}"
+              f"   ({(time.time() - inicio) / 60:.0f} min en total; final omitida con --sin-final)")
+        resumen = {"fichas_clasificatoria": fichas, "eliminados": eliminado_en, "finalistas": finalistas,
+                   "final": {}, "posiciones_final": [], "campeon": None, "timeouts": timeouts}
+        with open(os.path.join(carpeta, "resumen.json"), "w", encoding="utf-8") as f:
+            json.dump(resumen, f, indent=1, ensure_ascii=False)
+        return resumen
+
     print(f"\nFINAL: {', '.join(etiqueta(b) for b in finalistas)}")
     print(f"  (todos con 10 000 fichas; gana el último en pie o el que tenga más fichas "
           f"tras {args.minutos_final} min)", flush=True)
@@ -264,6 +274,8 @@ def main():
     p.add_argument("--manos", type=int, default=50, help="manos máximas por mesa (por defecto 50)")
     p.add_argument("--limite-mesa", type=int, default=360, help="segundos máximos por mesa (por defecto 360 = 6 min)")
     p.add_argument("--minutos-final", type=int, default=60, help="duración máxima de la final (por defecto 60)")
+    p.add_argument("--sin-final", action="store_true",
+                   help="juega solo las rondas de clasificación, sin la mesa final")
     p.add_argument("--paralelo", type=int, default=4, help="mesas que se juegan a la vez (por defecto 4)")
     p.add_argument("--bin", default=os.path.join(AQUI, "bin"), help="carpeta con mesa-fichas")
     args = p.parse_args()
@@ -281,7 +293,8 @@ def main():
         except RuntimeError as e:
             print(f"\nEl torneo {t} se detuvo: {e}")
             continue
-        titulos[r["campeon"]] = titulos.get(r["campeon"], 0) + 1
+        if r["campeon"]:
+            titulos[r["campeon"]] = titulos.get(r["campeon"], 0) + 1
         for b in r["finalistas"]:
             finales[b] = finales.get(b, 0) + 1
         for pos, b in enumerate(sorted(r["fichas_clasificatoria"], key=lambda x: -r["fichas_clasificatoria"][x]), 1):
