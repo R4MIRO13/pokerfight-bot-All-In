@@ -1,0 +1,67 @@
+# Bots que juegan en torneo_completo.py y torneo_finales.py (uno por línea).
+# Para sacar a uno, ponle # adelante. Para meterlo, quítale el #.
+# Con 30 bots se forman 6 mesas de 5, como en el torneo oficial.
+# Lista completa de estilos:  python mi_bot.py -estilos
+
+# ===== Activos (30) =====
+
+# --- Originales ---
+equilibrado
+agresivo
+prudente
+farolero
+
+# --- Sobrevivir ---
+tortuga
+adaptativo
+gestor
+antimaniaco
+maton
+esquivador
+cerrador
+
+# --- Explotar rivales ---
+cobrador
+ladron
+flotador
+trampero
+antikit
+huella
+
+# --- Teoría de juegos ---
+impredecible
+icm
+
+# --- Aprendizaje ---
+metabot
+lector
+simulador
+tamano
+
+# --- Fase del torneo ---
+meta
+
+# --- Creativos ---
+entrenador
+evolutivo
+
+# --- Híbridos por fases ---
+hibrido1_esquivador
+hibrido2_cerrador
+hibrido3_tortuga
+hibrido4_candado
+
+# ===== Disponibles pero fuera del torneo =====
+# unocontrauno
+# antikit_uno
+# icm_uno
+# esquivador_uno
+# clasificador
+# gto
+# explicable
+# finalista
+# pushfold
+# observador
+# comite
+# kamikaze
+# ejemplo_oficial

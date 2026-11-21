@@ -1,0 +1,13 @@
+# Secretos
+token.txt
+
+# Datos generados por el bot
+datos/
+logs/
+
+# Python
+__pycache__/
+*.pyc
+
+# Pruebas locales: binarios del kit y resultados
+pruebas/resultados/
