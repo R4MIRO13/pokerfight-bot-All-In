@@ -1,78 +1,81 @@
-# PokerFight Bot: el lector de apuestas
+# PokerFight Bot: Híbrido 5, el bot que se arma con lo mejor de cada estilo
 
-Bot de Texas Hold'em No-Limit para PokerFight, escrito en Python puro (3.6+, sin dependencias).
-Su idea central: **no adivinar a ciegas, sino leer a cada rival y razonar con probabilidades**,
-y explicar cada decisión en una bitácora legible.
+Bot de Texas Hold'em No-Limit para PokerFight, escrito en Python puro (3.8+, sin dependencias).
+No es un solo estilo de juego: es una **fusión de varios bots**. Primero creamos 43 personalidades,
+las enfrentamos entre sí en miles de manos con el formato oficial y medimos cuál rinde mejor en
+cada fase del torneo. El bot final usa, en cada momento, la que ganó esa fase.
 
-## Cómo piensa
+## Cómo juega cada mano (el motor común)
 
-1. **Equidad por Monte Carlo con rangos.** En cada turno simula miles de finales posibles
-   (unas 20 000 en menos de 0,7 s) con un evaluador propio. Cada rival recibe manos coherentes
-   con lo que hizo, no cartas al azar.
+1. **Equidad por Monte Carlo con rangos.** En cada turno simula hasta 20 000 finales posibles
+   (en menos de 0,8 s) con un evaluador propio. A cada rival le asigna manos coherentes con lo que hizo.
 2. **El tamaño de la apuesta cuenta una historia.** Medio bote, bote completo o una sobreapuesta
-   implican rangos distintos: el bot ordena todas las manos posibles del rival según su fuerza en
-   esa mesa y se queda con la franja que encaja con la apuesta (más estrecha si sube sobre otra apuesta).
-3. **Memoria de rivales por alias.** Los alias son estables todo el torneo, así que el bot guarda
-   para cada rival cuánto juega, cuánto sube, cuánto se retira y **cuánto farolea** (medido en los
-   showdowns). Además aprende el ancho real de su rango con las cartas que muestra: si alguien sube
-   con basura, lo detecta y lo paga más. La memoria se guarda en disco y sobrevive a reinicios.
-4. **Decisión con pot odds.** Paga si su equidad supera lo que cuesta pagar más un margen que
-   depende de la posición y del riesgo. Apuesta por valor con manos fuertes, farolea más contra
-   quien se retira mucho y nunca contra quien paga todo.
-5. **Supervivencia primero.** En la clasificatoria quedarse sin fichas es definitivo. Si una jugada
-   arriesga toda la pila contra alguien que nos cubre, exige más ventaja. En la final, con las pilas
-   reiniciadas, el bot lo detecta y se vuelve algo más agresivo.
+   implican rangos distintos: el bot se queda con la franja de manos que encaja con esa apuesta.
+3. **Memoria de rivales por alias.** Para cada rival guarda cuánto juega, sube, se retira y farolea
+   (medido en los showdowns), y aprende el ancho real de su rango. Sobrevive a reinicios.
+4. **Pot odds y supervivencia.** Paga si su equidad supera el precio más un margen que crece cuando
+   se juega la pila contra alguien que lo cubre: en la clasificatoria, quedarse sin fichas es definitivo.
 
-## Estrategia por defecto: el Híbrido 4 con candado
+## La fusión: qué estilo usa en cada fase y por qué
 
-El bot tiene 42 personalidades (una por estilo de juego) y por defecto juega por fases:
+| Fase | Estilo | Por qué lo elegimos (datos de nuestras simulaciones) |
+|---|---|---|
+| Ronda 1 | **Antimaníaco** | Nunca eliminado en 23 rondas 1 simuladas; ganó fichas en 15 de 23 mesas. |
+| Rondas 2-10, **dentro** del Top 6 | **Anti-kit + candado** | Desde esa situación terminó clasificando el 94 % de las veces. |
+| Rondas 2-10, **cerca** del Top 6 | **Cerrador** | Entró al Top 6 el 65 % de las veces (el promedio fue 28 %). |
+| Rondas 2-10, **lejos** del corte | **ICM** | El que más remonta: 43 % (el promedio fue 10 %). |
+| Final con 6 a 4 vivos | **Tortuga** | Llegó al podio en 7 de 8 finales. |
+| Final con 3 vivos (burbuja) | **ICM** | Las 7 veces que llegó al podio terminó 1.º o 2.º. |
+| Final con 2 vivos | **Adaptativo** | Campeón invicto del torneo uno contra uno de 32 estilos (9-2 en total). |
 
-- **Ronda 1, ICM:** cuida el valor de torneo de sus fichas: perder la pila cuesta más de lo que vale ganarla.
-- **Rondas 2 a 10, esquivador:** evita los botes grandes contra quien tiene más fichas que él.
-- **Candado:** si `fichas - rondas_que_faltan × 1 750 > 35 000`, la clasificación ya está asegurada
-  aunque pierda todas las ciegas que quedan, así que deja de apostar hasta la final.
-- **Final, Anti-kit:** aplica contraestrategias a los estilos típicos de bots; fue el que mejor rindió
-  en las finales simuladas. Con un solo rival,
-  pasa a modo uno contra uno.
+**¿Cómo sabe en qué situación está?** El servidor no informa el puesto ni las fichas de otras mesas,
+así que al empezar cada mesa compara sus fichas con el corte del Top 6 que medimos ronda por ronda:
 
-Todo se eligió simulando en local el torneo en el formato oficial, finales y duelos entre estilos.
+| Ronda | Dentro si tiene más de | Cerca si tiene desde | Si no, lejos |
+|---|---|---|---|
+| 2 | 15 000 | 9 000 | |
+| 3 | 18 000 | 10 700 | |
+| 4 | 20 000 | 12 000 | |
+| 5 | 21 500 | 12 800 | |
+| 6 a 10 | 22 500 | 13 500 | |
+
+Cuenta las rondas por los cambios de mesa (una sola conexión para todo el torneo) y, en la final,
+los rivales vivos con `en_torneo`. El **candado** deja de apostar cuando
+`fichas − rondas_que_faltan × 1 750 > 35 000`: la clasificación está asegurada aunque pierda
+todas las ciegas restantes.
+
+## Lo creativo: un torneo de bots para elegir al bot
+
+- **43 personalidades** propias: conservadoras, agresivas, lectoras de rivales, de teoría de juegos,
+  un meta-bot que aprende qué estilo le da más fichas, un comité que vota cada jugada y un
+  evolutivo que muta sus propios parámetros.
+- **Simuladores propios** que reproducen el torneo oficial en local: clasificatoria con fichas
+  acumuladas, finales y un torneo uno contra uno de doble eliminación.
+- **Decisiones con datos, no con intuición:** 23 torneos simulados (138 mesas de ronda 1),
+  77 rondas analizadas según la posición de cada bot frente al corte, 43 mesas finales y
+  170 duelos uno contra uno. Así vimos, por ejemplo, que el puesto más peligroso de la burbuja
+  es el del medio y no el más corto, y que el estilo que mejor clasifica no es el que mejor
+  cierra una final.
+- **Bitácora que explica cada decisión**, incluidos los cambios de estilo
+  (`Híbrido: ronda 3, cerca del Top 6 -> juego como cerrador`).
 
 ## Robustez
 
-- Responde siempre a tiempo (mediana de 0,25 s y máximo observado de 0,8 s, con un plazo de 5 s)
-  y valida cada acción contra `acciones_validas`, con `monto` como total de la ronda.
-- Si algo falla internamente, juega la acción segura en vez de quedarse callado.
-- Reconexión automática con espera creciente; nunca envía `abandono`.
-
-## Resultados en pruebas locales
-
-Mesas de 5 jugadores con las condiciones de la clasificatoria (10 000 fichas, 50/100, 50 manos)
-contra 4 bots del kit elegidos al azar, en las mismas 80 mesas para cada bot (estilo base):
-
-| Bot | Fichas promedio por mesa | Mesas en que quedó eliminado |
-|---|---|---|
-| **Este bot** | **+4 343** | **11 / 80** |
-| Darwin (kit) | +1 493 | 40 / 80 |
-| Espía (kit) | +485 | 33 / 80 |
-
+Responde siempre a tiempo (máximo observado 0,8 s de 5 s), valida cada acción contra
+`acciones_validas` (`monto` es el total de la ronda), juega la acción segura si algo falla,
+se reconecta sola con espera creciente y nunca envía `abandono`.
 
 ## Uso
 
 ```
-python mi_bot.py -addr HOST:PUERTO -token TU_TOKEN
+python mi_bot.py -addr HOST:PUERTO -token TU_TOKEN -estilo hibrido5
 ```
 
-El token también puede ir en la variable `POKERFIGHT_TOKEN` o en un archivo `token.txt`, que no se sube
-al repositorio. Opciones: `-estilo NOMBRE` elige una de sus 42 personalidades (por defecto `hibrido4_candado`; `-estilos` las lista),
-incluidas un meta-bot que elige su estilo según la mesa, un comité que vota cada jugada y un
-evolutivo que muta sus propios parámetros. `-modo final` fuerza el modo final, `-ronda N` indica
-la ronda si se reinicia a mitad del torneo, `-silencioso` oculta la bitácora en consola y
-`-una-vez` desactiva la reconexión (para la arena local). La bitácora queda en `logs/`
-y la memoria de rivales en `datos/rivales.json`.
+El token también puede ir en `POKERFIGHT_TOKEN` o en `token.txt` (no se sube al repositorio).
+`-escala 1.2` sube los umbrales si hay más equipos de los simulados (30), `-ronda N` indica la ronda
+si se reinicia a mitad del torneo, `-modo final` fuerza la final y `-estilos` lista las 43
+personalidades. Bitácora en `logs/`; memoria de rivales en `datos/rivales.json`.
 
-## Estructura
-
-`pfbot/cartas.py` (evaluador) · `equidad.py` (Monte Carlo y rangos) · `rivales.py` (memoria) ·
+**Estructura:** `pfbot/cartas.py` (evaluador) · `equidad.py` (Monte Carlo) · `rivales.py` (memoria) ·
 `estrategia.py` (decisiones) · `estilos.py` y `controladores.py` (personalidades y fases) ·
-`bot.py` (protocolo y reconexión) · `tablas.py` (fuerza preflop precalculada) ·
-`pruebas/` (simuladores locales del torneo).
+`bot.py` (protocolo) · `pruebas/` (simuladores).

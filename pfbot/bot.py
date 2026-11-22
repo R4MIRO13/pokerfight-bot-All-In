@@ -63,13 +63,15 @@ class Bitacora:
 
 class Bot:
     def __init__(self, direccion, token, carpeta_datos="datos", carpeta_logs="logs",
-                 modo="auto", silencioso=False, estilo="equilibrado", ronda=0):
+                 modo="auto", silencioso=False, estilo="equilibrado", ronda=0, escala=1.0):
         self.direccion = direccion
         self.token = token
         self.memoria = Memoria(os.path.join(carpeta_datos, "rivales.json") if carpeta_datos else None,
                                factor_prior=ESTILOS[estilo].get("aprende_rapido", 1.0))
         self.log = Bitacora(carpeta_logs, silencioso)
         self.controlador = controladores.crear(estilo, self.memoria, self.log)
+        if hasattr(self.controlador, "escala"):
+            self.controlador.escala = escala   # umbrales del híbrido 5 (más equipos = más fichas)
         # Ronda de la clasificatoria: la mesa que estamos jugando en esta sesión,
         # o la que se indique con -ronda (si el bot se reinició a mitad del torneo).
         self.ronda_inicial = ronda

@@ -358,9 +358,49 @@ class Fases(Controlador):
         super().__init__(*a)
         self.cfg = self.base["fases"]
         nombres = {self.cfg["r1"], self.cfg["rondas"], self.cfg["final"]}
+        nombres |= set((self.cfg.get("situaciones") or {}).values())
+        nombres |= set((self.cfg.get("final_fases") or {}).values())
         self.subs = {n: crear(n, self.memoria, self.log) for n in nombres}
         self.cerrado = False
         self.fase = None
+        self.escala = 1.0          # multiplica los umbrales (-escala en mi_bot.py)
+        self.ultimo_aviso = None
+
+    def _umbrales(self, ronda):
+        tabla = self.cfg["umbrales"]
+        r = max(k for k in tabla if k <= max(ronda, min(tabla)))
+        dentro, cerca = tabla[r]
+        return dentro * self.escala, cerca * self.escala
+
+    def _situacion(self, info):
+        """dentro / cerca / lejos del Top 6 según las fichas al empezar esta mesa.
+        Se decide una vez por mesa: la pila de inicio no cambia durante la mesa."""
+        dentro, cerca = self._umbrales(info["ronda"])
+        pila = info["pila_inicio_mesa"]
+        if pila > dentro:
+            return "dentro"
+        return "cerca" if pila >= cerca else "lejos"
+
+    def _elegir(self, info):
+        """(estilo, descripción de la fase) para esta jugada."""
+        if info["modo"] == "final":
+            ff = self.cfg.get("final_fases")
+            if not ff:
+                return self.cfg["final"], "final"
+            vivos = info["vivos"]
+            if vivos <= 2:
+                return ff["hu"], "final, uno contra uno"
+            if vivos == 3:
+                return ff["burbuja"], "final, burbuja (3 vivos)"
+            return ff["temprana"], f"final, fase temprana ({vivos} vivos)"
+        if info["ronda"] <= 1:
+            return self.cfg["r1"], "ronda 1"
+        sit = self.cfg.get("situaciones")
+        if not sit:
+            return self.cfg["rondas"], f"ronda {info['ronda']}"
+        s = self._situacion(info)
+        texto = {"dentro": "dentro del Top 6", "cerca": "cerca del Top 6", "lejos": "lejos del Top 6"}[s]
+        return sit[s], f"ronda {info['ronda']}, {texto}"
 
     def _candado(self, info):
         limite = self.cfg.get("candado")
@@ -378,11 +418,16 @@ class Fases(Controlador):
     def estilo(self, info):
         if info["modo"] == "final":
             self.cerrado = False
-            nombre, fase = self.cfg["final"], "final"
-        elif info["ronda"] <= 1:
-            nombre, fase = self.cfg["r1"], "ronda 1"
-        else:
-            nombre, fase = self.cfg["rondas"], f"ronda {info['ronda']}"
+        nombre, fase = self._elegir(info)
+        aviso = (fase, nombre)
+        if aviso != self.ultimo_aviso:
+            self.ultimo_aviso = aviso
+            extra = ""
+            if self.cfg.get("situaciones") and info["modo"] != "final" and info["ronda"] > 1:
+                dentro, cerca = self._umbrales(info["ronda"])
+                extra = (f" (empecé la mesa con {info['pila_inicio_mesa']} fichas; "
+                         f"dentro > {dentro:.0f}, cerca >= {cerca:.0f})")
+            self.log(f"Híbrido: {fase} -> juego como {nombre}{extra}")
         self._candado(info)
         sub = self.subs[nombre]
         d = sub.estilo(info)
@@ -392,7 +437,8 @@ class Fases(Controlador):
         elif self.cerrado:
             self.actual = f"{fase}: candado"
         else:
-            self.actual = f"{fase}: {sub.actual}"
+            detalle = f" ({sub.actual})" if self.cfg.get("situaciones") and sub.actual != nombre else ""
+            self.actual = f"{fase}: {nombre}{detalle}" if self.cfg.get("situaciones") else f"{fase}: {sub.actual}"
         self.fase = nombre
         return d
 

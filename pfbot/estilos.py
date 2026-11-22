@@ -146,6 +146,20 @@ ESTILOS = {
                            controlador="fases",
                            fases=dict(r1="icm", rondas="esquivador", final="antikit", hu=True,
                                       candado=35000, candado_desde=2, ciegas_ronda=1750)),
+    # Híbrido 5: en las rondas 2-10 elige el estilo según sus fichas al empezar
+    # cada mesa (dentro del Top 6, cerca del corte o lejos). Umbrales medidos en
+    # las simulaciones con 30 bots: (más de esto = dentro, desde esto = cerca).
+    # En la final cambia según los jugadores que quedan.
+    "hibrido5": _e(44, "Híbrido 5", "Antimaníaco en la ronda 1; en las rondas 2-10 Anti-kit con candado "
+                   "(dentro del Top 6), Cerrador (cerca) o ICM (lejos); en la final Tortuga (6-4 vivos), "
+                   "ICM (3) y Adaptativo (2)",
+                   controlador="fases",
+                   fases=dict(r1="antimaniaco", rondas="antikit", final="icm", hu=False,
+                              situaciones=dict(dentro="antikit", cerca="cerrador", lejos="icm"),
+                              umbrales={2: (15000, 9000), 3: (18000, 10700), 4: (20000, 12000),
+                                        5: (21500, 12800), 6: (22500, 13500)},
+                              final_fases=dict(temprana="tortuga", burbuja="icm", hu="adaptativo"),
+                              candado=35000, candado_desde=2, ciegas_ronda=1750)),
 
     "kamikaze": _e(36, "Kamikaze", "all-in en su primera mano; luego solo ciegas salvo 90 % de equidad; "
                    "experto en uno contra uno", controlador="kamikaze"),

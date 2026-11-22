@@ -44,6 +44,9 @@ def main():
     p.add_argument("-ronda", type=int, default=0,
                    help="ronda de la clasificatoria en la que entra el bot (solo si lo reinicias "
                         "a mitad del torneo; por defecto las cuenta solo)")
+    p.add_argument("-escala", type=float, default=1.0,
+                   help="multiplica los umbrales de fichas del hibrido5 (1.0 = calibrado con 30 "
+                        "equipos; con 36 equipos usa 1.2)")
     p.add_argument("-una-vez", action="store_true",
                    help="no reconectar al cerrarse la conexión (para pruebas con la arena)")
     p.add_argument("-silencioso", action="store_true", help="no imprimir la bitácora en consola")
@@ -63,7 +66,7 @@ def main():
 
     sys.exit(correr(a.addr, token, reconectar=not a.una_vez, carpeta_datos=a.datos,
                     carpeta_logs=a.logs, modo=a.modo, silencioso=a.silencioso,
-                    estilo=a.estilo, ronda=a.ronda))
+                    estilo=a.estilo, ronda=a.ronda, escala=a.escala))
 
 
 if __name__ == "__main__":

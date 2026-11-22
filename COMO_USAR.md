@@ -76,6 +76,36 @@ crear otro híbrido, copia uno y cambia los nombres de los estilos.
 El `hibrido4_candado` deja de apostar (solo pasa o se retira) cuando
 `fichas - (10 - ronda + 1) * 1750 > 35000`, desde la ronda 2 hasta la final.
 
+### Híbrido 5 (`-estilo hibrido5`)
+
+Cambia de estilo según su situación:
+
+| Momento | Estilo |
+|---|---|
+| Ronda 1 | Antimaníaco |
+| Rondas 2-10, dentro del Top 6 | Anti-kit (con el mismo candado del híbrido 4) |
+| Rondas 2-10, cerca del Top 6 | Cerrador |
+| Rondas 2-10, lejos del Top 6 | ICM |
+| Final con 6 a 4 vivos | Tortuga |
+| Final con 3 vivos | ICM |
+| Final con 2 vivos | Adaptativo |
+
+La situación se decide al empezar cada mesa con las fichas que tiene en ese momento
+(el bot no ve las fichas de los bots de otras mesas):
+
+| Ronda | Dentro si tiene más de | Cerca si tiene desde | Lejos si tiene menos de |
+|---|---|---|---|
+| 2 | 15 000 | 9 000 | 9 000 |
+| 3 | 18 000 | 10 700 | 10 700 |
+| 4 | 20 000 | 12 000 | 12 000 |
+| 5 | 21 500 | 12 800 | 12 800 |
+| 6 a 10 | 22 500 | 13 500 | 13 500 |
+
+Están medidos con 30 bots. Si en el torneo hay más equipos (más fichas en juego), súbelos
+con `-escala`, por ejemplo `-escala 1.2` para unos 36 equipos. En la final, el número de
+vivos sale de `estado.jugadores[].en_torneo`. La bitácora anota cada cambio de estilo
+(líneas `Híbrido: ...`).
+
 El bot cuenta las rondas solo, porque usa una sola conexión para todo el torneo. **Si tienes
 que reiniciarlo a mitad del torneo**, indica en qué ronda entra, por ejemplo `-ronda 6`, y si
 lo reinicias para la final, usa `-modo final`.
