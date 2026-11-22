@@ -33,15 +33,15 @@ así que al empezar cada mesa compara sus fichas con el corte del Top 6 que medi
 
 | Ronda | Dentro si tiene más de | Cerca si tiene desde | Si no, lejos |
 |---|---|---|---|
-| 2 | 15 000 | 9 000 | |
-| 3 | 18 000 | 10 700 | |
-| 4 | 20 000 | 12 000 | |
-| 5 | 21 500 | 12 800 | |
-| 6 a 10 | 22 500 | 13 500 | |
+| 2 | 12 000 | 7 200 | |
+| 3 | 14 400 | 8 560 | |
+| 4 | 16 000 | 9 600 | |
+| 5 | 17 200 | 10 240 | |
+| 6 a 10 | 18 000 | 10 800 | |
 
 Cuenta las rondas por los cambios de mesa (una sola conexión para todo el torneo) y, en la final,
 los rivales vivos con `en_torneo`. El **candado** deja de apostar cuando
-`fichas − rondas_que_faltan × 1 750 > 35 000`: la clasificación está asegurada aunque pierda
+`fichas − rondas_que_faltan × 1 750 > 15 500`: la clasificación está asegurada aunque pierda
 todas las ciegas restantes.
 
 ## Lo creativo: un torneo de bots para elegir al bot
@@ -72,7 +72,7 @@ python mi_bot.py -addr HOST:PUERTO -token TU_TOKEN
 ```
 
 Juega el Híbrido 5.0 por defecto (`-estilo hibrido5`). El token también puede ir en `POKERFIGHT_TOKEN` o en `token.txt` (no se sube al repositorio).
-`-escala 1.2` sube los umbrales si hay más equipos de los simulados (30), `-ronda N` indica la ronda
+`-escala 1.2` sube los umbrales si hay más equipos de los previstos (18), `-ronda N` indica la ronda
 si se reinicia a mitad del torneo, `-modo final` fuerza la final y `-estilos` lista las 43
 personalidades. Bitácora en `logs/`; memoria de rivales en `datos/rivales.json`.
 

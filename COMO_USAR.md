@@ -83,7 +83,7 @@ Cambia de estilo según su situación:
 | Momento | Estilo |
 |---|---|
 | Ronda 1 | Antimaníaco |
-| Rondas 2-10, dentro del Top 6 | Anti-kit (con el mismo candado del híbrido 4) |
+| Rondas 2-10, dentro del Top 6 | Anti-kit (con candado a 15 500) |
 | Rondas 2-10, cerca del Top 6 | Cerrador |
 | Rondas 2-10, lejos del Top 6 | ICM |
 | Final con 6 a 4 vivos | Tortuga |
@@ -95,14 +95,14 @@ La situación se decide al empezar cada mesa con las fichas que tiene en ese mom
 
 | Ronda | Dentro si tiene más de | Cerca si tiene desde | Lejos si tiene menos de |
 |---|---|---|---|
-| 2 | 15 000 | 9 000 | 9 000 |
-| 3 | 18 000 | 10 700 | 10 700 |
-| 4 | 20 000 | 12 000 | 12 000 |
-| 5 | 21 500 | 12 800 | 12 800 |
-| 6 a 10 | 22 500 | 13 500 | 13 500 |
+| 2 | 12 000 | 7 200 | 7 200 |
+| 3 | 14 400 | 8 560 | 8 560 |
+| 4 | 16 000 | 9 600 | 9 600 |
+| 5 | 17 200 | 10 240 | 10 240 |
+| 6 a 10 | 18 000 | 10 800 | 10 800 |
 
-Están medidos con 30 bots. Si en el torneo hay más equipos (más fichas en juego), súbelos
-con `-escala`, por ejemplo `-escala 1.2` para unos 36 equipos. En la final, el número de
+Son los umbrales medidos con 30 bots multiplicados por 0,8, ajustados al torneo de 18 equipos.
+Si hay otro número de equipos, ajústalos con `-escala` (por ejemplo `-escala 1.25` para unos 30). En la final, el número de
 vivos sale de `estado.jugadores[].en_torneo`. La bitácora anota cada cambio de estilo
 (líneas `Híbrido 5.0: ...`).
 
