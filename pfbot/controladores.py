@@ -427,7 +427,7 @@ class Fases(Controlador):
                 dentro, cerca = self._umbrales(info["ronda"])
                 extra = (f" (empecé la mesa con {info['pila_inicio_mesa']} fichas; "
                          f"dentro > {dentro:.0f}, cerca >= {cerca:.0f})")
-            self.log(f"Híbrido: {fase} -> juego como {nombre}{extra}")
+            self.log(f"{self.base['nombre']}: {fase} -> juego como {nombre}{extra}")
         self._candado(info)
         sub = self.subs[nombre]
         d = sub.estilo(info)

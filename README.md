@@ -1,7 +1,7 @@
-# PokerFight Bot: Híbrido 5, el bot que se arma con lo mejor de cada estilo
+# PokerFight Bot: Híbrido 5.0, el bot que se arma con lo mejor de cada estilo
 
 Bot de Texas Hold'em No-Limit para PokerFight, escrito en Python puro (3.8+, sin dependencias).
-No es un solo estilo de juego: es una **fusión de varios bots**. Primero creamos 43 personalidades,
+No es un solo estilo de juego: es una **fusión de varios bots**, la quinta versión de nuestros híbridos por fases (1.0 a 5.0). Primero creamos 43 personalidades,
 las enfrentamos entre sí en miles de manos con el formato oficial y medimos cuál rinde mejor en
 cada fase del torneo. El bot final usa, en cada momento, la que ganó esa fase.
 
@@ -57,7 +57,7 @@ todas las ciegas restantes.
   es el del medio y no el más corto, y que el estilo que mejor clasifica no es el que mejor
   cierra una final.
 - **Bitácora que explica cada decisión**, incluidos los cambios de estilo
-  (`Híbrido: ronda 3, cerca del Top 6 -> juego como cerrador`).
+  (`Híbrido 5.0: ronda 3, cerca del Top 6 -> juego como cerrador`).
 
 ## Robustez
 
@@ -68,10 +68,10 @@ se reconecta sola con espera creciente y nunca envía `abandono`.
 ## Uso
 
 ```
-python mi_bot.py -addr HOST:PUERTO -token TU_TOKEN -estilo hibrido5
+python mi_bot.py -addr HOST:PUERTO -token TU_TOKEN
 ```
 
-El token también puede ir en `POKERFIGHT_TOKEN` o en `token.txt` (no se sube al repositorio).
+Juega el Híbrido 5.0 por defecto (`-estilo hibrido5`). El token también puede ir en `POKERFIGHT_TOKEN` o en `token.txt` (no se sube al repositorio).
 `-escala 1.2` sube los umbrales si hay más equipos de los simulados (30), `-ronda N` indica la ronda
 si se reinicia a mitad del torneo, `-modo final` fuerza la final y `-estilos` lista las 43
 personalidades. Bitácora en `logs/`; memoria de rivales en `datos/rivales.json`.

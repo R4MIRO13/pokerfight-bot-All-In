@@ -57,26 +57,26 @@ Agrega `-estilo` al comando para elegir la personalidad del bot:
 
 ```
 python mi_bot.py -addr HOST:PUERTO -estilo prudente
-python mi_bot.py -estilos          # lista las 42 personalidades
+python mi_bot.py -estilos          # lista las 43 personalidades
 ```
 
 Hay 34 personalidades base (sobrevivir, explotar rivales, teoría de juegos, aprendizaje,
-fase del torneo y creativas), el Kamikaze, 3 variantes "uno contra uno" y 4 híbridos por fases. Si no pones `-estilo`,
-juega `hibrido4_candado`. Los números de cada una están en `pfbot/estilos.py`, y las
+fase del torneo y creativas), el Kamikaze, 3 variantes "uno contra uno" y 5 híbridos por fases (Híbrido 1.0 a 5.0). Si no pones `-estilo`,
+juega `hibrido5` (Híbrido 5.0). Los números de cada una están en `pfbot/estilos.py`, y las
 que cambian de estilo sobre la marcha (meta-bot, lector, entrenador, comité,
 evolutivo, kamikaze...) en `pfbot/controladores.py`.
 
 ## Híbridos por fases y el candado
 
-Los estilos `hibrido1_esquivador`, `hibrido2_cerrador`, `hibrido3_tortuga` y `hibrido4_candado`
+Los estilos `hibrido1_esquivador` (Híbrido 1.0), `hibrido2_cerrador` (2.0), `hibrido3_tortuga` (3.0) y `hibrido4_candado` (4.0)
 usan un estilo distinto según la etapa: ronda 1, rondas 2 a 10, final y, en la final, modo uno
 contra uno cuando queda un solo rival. En la final los cuatro juegan con `antikit`. Se definen en `pfbot/estilos.py` (campo `fases`): para
 crear otro híbrido, copia uno y cambia los nombres de los estilos.
 
-El `hibrido4_candado` deja de apostar (solo pasa o se retira) cuando
+El `hibrido4_candado` (Híbrido 4.0) deja de apostar (solo pasa o se retira) cuando
 `fichas - (10 - ronda + 1) * 1750 > 35000`, desde la ronda 2 hasta la final.
 
-### Híbrido 5 (`-estilo hibrido5`)
+### Híbrido 5.0 (`-estilo hibrido5`, el estilo por defecto)
 
 Cambia de estilo según su situación:
 
@@ -104,7 +104,7 @@ La situación se decide al empezar cada mesa con las fichas que tiene en ese mom
 Están medidos con 30 bots. Si en el torneo hay más equipos (más fichas en juego), súbelos
 con `-escala`, por ejemplo `-escala 1.2` para unos 36 equipos. En la final, el número de
 vivos sale de `estado.jugadores[].en_torneo`. La bitácora anota cada cambio de estilo
-(líneas `Híbrido: ...`).
+(líneas `Híbrido 5.0: ...`).
 
 El bot cuenta las rondas solo, porque usa una sola conexión para todo el torneo. **Si tienes
 que reiniciarlo a mitad del torneo**, indica en qué ronda entra, por ejemplo `-ronda 6`, y si

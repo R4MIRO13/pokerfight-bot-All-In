@@ -132,16 +132,16 @@ ESTILOS = {
     # hu = en la final, cuando queda un solo rival, modo uno contra uno.
     # candado: si (fichas - rondas_que_faltan * ciegas_ronda) > candado, deja de
     # apostar hasta la final (solo desde la ronda "candado_desde").
-    "hibrido1_esquivador": _e(40, "Híbrido 1", "esquivador en las 10 rondas; Anti-kit en la final; uno contra uno al final",
+    "hibrido1_esquivador": _e(40, "Híbrido 1.0", "esquivador en las 10 rondas; Anti-kit en la final; uno contra uno al final",
                               controlador="fases",
                               fases=dict(r1="esquivador", rondas="esquivador", final="antikit", hu=True)),
-    "hibrido2_cerrador": _e(41, "Híbrido 2", "cerrador en las 10 rondas; Anti-kit en la final; uno contra uno al final",
+    "hibrido2_cerrador": _e(41, "Híbrido 2.0", "cerrador en las 10 rondas; Anti-kit en la final; uno contra uno al final",
                             controlador="fases",
                             fases=dict(r1="cerrador", rondas="cerrador", final="antikit", hu=True)),
-    "hibrido3_tortuga": _e(42, "Híbrido 3", "tortuga en las 10 rondas; Anti-kit en la final; uno contra uno al final",
+    "hibrido3_tortuga": _e(42, "Híbrido 3.0", "tortuga en las 10 rondas; Anti-kit en la final; uno contra uno al final",
                            controlador="fases",
                            fases=dict(r1="tortuga", rondas="tortuga", final="antikit", hu=True)),
-    "hibrido4_candado": _e(43, "Híbrido 4", "ICM en la ronda 1; esquivador con candado en las rondas 2-10; "
+    "hibrido4_candado": _e(43, "Híbrido 4.0", "ICM en la ronda 1; esquivador con candado en las rondas 2-10; "
                            "Anti-kit en la final; uno contra uno al final",
                            controlador="fases",
                            fases=dict(r1="icm", rondas="esquivador", final="antikit", hu=True,
@@ -150,7 +150,7 @@ ESTILOS = {
     # cada mesa (dentro del Top 6, cerca del corte o lejos). Umbrales medidos en
     # las simulaciones con 30 bots: (más de esto = dentro, desde esto = cerca).
     # En la final cambia según los jugadores que quedan.
-    "hibrido5": _e(44, "Híbrido 5", "Antimaníaco en la ronda 1; en las rondas 2-10 Anti-kit con candado "
+    "hibrido5": _e(44, "Híbrido 5.0", "Antimaníaco en la ronda 1; en las rondas 2-10 Anti-kit con candado "
                    "(dentro del Top 6), Cerrador (cerca) o ICM (lejos); en la final Tortuga (6-4 vivos), "
                    "ICM (3) y Adaptativo (2)",
                    controlador="fases",
@@ -175,4 +175,4 @@ HU_SIN = ("icm", "evita_lider", "ancho_max")
 UNO_CONTRA_UNO = _e(0, "Uno contra uno", "modo interno", apertura=1.2, valor=-0.05, faroles=1.6,
                     riesgo=0.6, piso=-0.05, perfiles=1.0)
 
-POR_DEFECTO = "hibrido4_candado"  # el que juega si no se indica -estilo
+POR_DEFECTO = "hibrido5"  # el que juega si no se indica -estilo
